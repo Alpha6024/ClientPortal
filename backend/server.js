@@ -17,7 +17,14 @@ dotenv.config();
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(cors({ origin: "http://localhost:5173", credentials: true, methods: ["GET","POST","PATCH","PUT","DELETE","OPTIONS"] }));
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL,
+  ].filter(Boolean),
+  credentials: true,
+  methods: ["GET","POST","PATCH","PUT","DELETE","OPTIONS"]
+}));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));

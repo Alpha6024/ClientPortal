@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { confirmPayment, uploadReceipt } from "../../api";
 
+const BASE = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5000";
+
 export default function PaymentConfirmModal({ invoice, onClose, onConfirmed }) {
   const [note, setNote]         = useState("");
   const [receiptUrl, setReceiptUrl] = useState("");
@@ -80,7 +82,7 @@ export default function PaymentConfirmModal({ invoice, onClose, onConfirmed }) {
               <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-3">
                 <span className="text-green-500">✓</span>
                 <span className="text-sm text-green-700 flex-1">Receipt uploaded</span>
-                <a href={`http://localhost:5000${receiptUrl}`} target="_blank" rel="noopener noreferrer"
+                <a href={`${BASE}${receiptUrl}`} target="_blank" rel="noopener noreferrer"
                   className="text-xs text-green-600 underline">View</a>
                 <button onClick={() => setReceiptUrl("")} className="text-xs text-red-400 hover:text-red-600">Remove</button>
               </div>

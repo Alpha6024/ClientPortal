@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import StatusBadge from "./StatusBadge";
 import { getContractPdfUrl, getInvoicePdfUrl, getDocumentPdfUrl } from "../../api";
 
+const BASE = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5000";
+
 // ── helpers ──────────────────────────────────────────────────────────
 function InfoRow({ label, value }) {
   if (!value) return null;
@@ -144,7 +146,7 @@ function InvoiceView({ doc, pdfUrl }) {
             {doc.paymentNote && <p className="text-xs text-green-600 mt-0.5">{doc.paymentNote}</p>}
           </div>
           {doc.paymentReceiptUrl && (
-            <a href={`http://localhost:5000${doc.paymentReceiptUrl}`} target="_blank" rel="noopener noreferrer"
+            <a href={`${BASE}${doc.paymentReceiptUrl}`} target="_blank" rel="noopener noreferrer"
               className="ml-auto text-xs text-green-600 underline">View Receipt</a>
           )}
         </div>

@@ -19,6 +19,8 @@ import DocumentViewer from "./onboarding/DocumentViewer";
 import PaymentConfirmModal from "./onboarding/PaymentConfirmModal";
 import StatusBadge from "./onboarding/StatusBadge";
 
+const BASE = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5000";
+
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
 const STATUS = {
@@ -359,7 +361,7 @@ function UserDetailPanel({ userId, onClose }) {
                     )}
                     {inv.paymentNote && <p className="text-xs text-gray-500 mb-2 italic">{inv.paymentNote}</p>}
                     {inv.paymentReceiptUrl && (
-                      <a href={`http://localhost:5000${inv.paymentReceiptUrl}`} target="_blank" rel="noopener noreferrer"
+                      <a href={`${BASE}${inv.paymentReceiptUrl}`} target="_blank" rel="noopener noreferrer"
                         className="text-xs text-blue-500 underline mb-2 block">View Receipt</a>
                     )}
                     <p className="text-xs text-gray-400 mb-3">Due: {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "Upon receipt"}</p>
