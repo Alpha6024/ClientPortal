@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { uploadSignature } from "../../api";
 import toast from "react-hot-toast";
 
+const BASE = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5000";
+
 export default function SignatureUpload({ value, onChange, label = "Upload Signature" }) {
   const inputRef = useRef();
   const [uploading, setUploading] = useState(false);
@@ -19,7 +21,7 @@ export default function SignatureUpload({ value, onChange, label = "Upload Signa
       const fd = new FormData();
       fd.append("signature", file);
       const res = await uploadSignature(fd);
-      onChange(`http://localhost:5000${res.data.url}`);
+      onChange(`${BASE}${res.data.url}`);
       toast.success("Signature uploaded");
     } catch {
       toast.error("Upload failed");
