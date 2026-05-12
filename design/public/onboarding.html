@@ -31,38 +31,31 @@
     <script src="https://static-bundles.visme.co/forms/vismeforms-embed.js"></script>
 
     <script>
-      function getSupabaseSession() {
+      const params = new URLSearchParams(window.location.search);
+      const userEmail = params.get("email") || "";
+      const adminEmail = "pranavborkar40@gmail.com";
+
+      function goToDashboard() {
+        window.location.href = userEmail === adminEmail ? "/admin" : "/dashboard";
+      }
+
+      // If submitted=true from Visme redirect
+      if (params.get("submitted") === "true") {
+        goToDashboard();
+      }
+
+      // If no email param at all, fall back to localStorage check
+      if (!userEmail && !params.get("submitted")) {
         try {
           const key = "sb-snzowfbrthagdekqvsmj-auth-token";
           const raw = localStorage.getItem(key);
-          return raw ? JSON.parse(raw) : null;
-        } catch (e) { return null; }
-      }
-
-      function goToDashboard() {
-        try {
-          const session = getSupabaseSession();
-          const email = session && session.user && session.user.email;
-          const adminEmail = "your-admin@email.com";
-          window.location.href = (email === adminEmail) ? "/admin" : "/dashboard";
+          if (!raw) window.location.href = "/login";
         } catch (e) {
-          window.location.href = "/dashboard";
+          window.location.href = "/login";
         }
       }
 
-      window.addEventListener("DOMContentLoaded", function () {
-        try {
-          if (window.location.search.includes("submitted=true")) {
-            goToDashboard();
-            return;
-          }
-          if (!getSupabaseSession()) window.location.href = "/login";
-        } catch (e) {
-          window.location.href = "/dashboard";
-        }
-      });
-
-      // Listen for Visme form submission postMessage
+      // Visme postMessage fallback
       window.addEventListener("message", function (e) {
         try {
           const data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -72,9 +65,7 @@
             data.event === "formSubmit" ||
             data.action === "formSubmit" ||
             (data.type && data.type.toLowerCase().includes("submit"))
-          ) {
-            goToDashboard();
-          }
+          ) goToDashboard();
         } catch (e) { /* ignore */ }
       });
     </script>

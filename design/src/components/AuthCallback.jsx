@@ -51,7 +51,8 @@ export default function AuthCallback() {
       if (isAdmin(user.email)) {
         navigate("/admin");
       } else if (isNewUser) {
-        window.location.href = "/onboarding.html";
+        // Pass email in URL so onboarding.html doesn't depend on localStorage timing
+        window.location.href = "/onboarding.html?email=" + encodeURIComponent(user.email);
       } else {
         navigate("/dashboard");
       }
