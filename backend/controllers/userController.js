@@ -1,6 +1,66 @@
 import User from "../models/User.js";
 import Project from "../models/Project.js";
 
+// Webhook from Visme form — pre-saves name/surname before user signs in
+export const vismeWebhook = async (req, res) => {
+  try {
+    // Visme sends form fields as key-value pairs — field names depend on your form
+    // Common field names: 'email', 'name', 'first_name', 'last_name', 'surname'
+    const body = req.body;
+
+    // Extract email — try common Visme field name patterns
+    const email = (
+      body.email || body.Email ||
+      body["Email Address"] || body["email_address"] ||
+      Object.values(body).find(v => typeof v === "string" && v.includes("@"))
+    )?.toLowerCase().trim();
+
+    if (!email) return res.status(400).json({ message: "No email found in form data" });
+
+    // Extract name — try common patterns
+    const rawName = (
+      body.name || body.Name ||
+      body["Full Name"] || body["full_name"] ||
+      body["first_name"] || body["First Name"] || ""
+    ).trim();
+
+    const rawSurname = (
+      body.surname || body.Surname ||
+      body["last_name"] || body["Last Name"] ||
+      body["family_name"] || ""
+    ).trim();
+
+    // If only full name provided, split it
+    let name = rawName;
+    let surname = rawSurname;
+    if (rawName && !rawSurname && rawName.includes(" ")) {
+      const parts = rawName.split(" ");
+      name = parts[0];
+      surname = parts.slice(1).join(" ");
+    }
+
+    // Upsert by email — create or update name/surname only (no supabaseId yet)
+    let user = await User.findOne({ email });
+    if (user) {
+      if (name)    user.name    = name;
+      if (surname) user.surname = surname;
+      await user.save();
+    } else {
+      user = await User.create({
+        email,
+        name:    name    || email.split("@")[0],
+        surname: surname || "",
+        role: "client",
+      });
+      await Project.create({ userId: user._id });
+    }
+
+    res.json({ ok: true, userId: user._id });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Upsert user from Supabase (called after login)
 export const upsertUser = async (req, res) => {
   try {

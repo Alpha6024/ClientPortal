@@ -1,8 +1,9 @@
 import express from "express";
-import { upsertUser, getUsers, getUserById, updateUserStatus, getStats, getUserBySupabaseId } from "../controllers/userController.js";
+import { upsertUser, getUsers, getUserById, updateUserStatus, getStats, getUserBySupabaseId, vismeWebhook } from "../controllers/userController.js";
 
 const router = express.Router();
 
+router.post("/visme-webhook", vismeWebhook);
 router.post("/upsert", upsertUser);
 router.get("/", getUsers);
 router.get("/stats", getStats);

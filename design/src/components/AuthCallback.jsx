@@ -14,15 +14,28 @@ export default function AuthCallback() {
 
       const { user } = session;
       const meta = user.user_metadata;
+
+      // Read name/surname saved from Visme form — takes priority over Google metadata
+      const vismeFirst = localStorage.getItem("visme_first_name") || "";
+      const vismeLast  = localStorage.getItem("visme_last_name")  || "";
+
+      // Fall back to Google metadata if Visme data not present
       const fullName = meta?.full_name || meta?.name || "";
-      const [name, ...rest] = fullName.split(" ");
+      const [googleFirst, ...googleRest] = fullName.split(" ");
+
+      const name    = vismeFirst || googleFirst || user.email.split("@")[0];
+      const surname = vismeLast  || googleRest.join(" ") || "";
+
+      // Clear localStorage after use
+      localStorage.removeItem("visme_first_name");
+      localStorage.removeItem("visme_last_name");
 
       try {
         await upsertUser({
           supabaseId: user.id,
           email: user.email,
-          name: name || user.email.split("@")[0],
-          surname: rest.join(" ") || "",
+          name,
+          surname,
           profileImage: meta?.avatar_url || meta?.picture || "",
           role: user.email === ADMIN_EMAIL ? "admin" : "client",
         });

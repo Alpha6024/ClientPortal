@@ -19,9 +19,28 @@ export default function SignupPage() {
     script.src = "https://static-bundles.visme.co/forms/vismeforms-embed.js";
     script.async = true;
     document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
+    return () => { document.body.removeChild(script); };
+  }, []);
+
+  useEffect(() => {
+    function handleVismeSubmit(e) {
+      try {
+        // Visme posts a message event when form submits
+        const data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+        if (data?.type === "form-submit" || data?.event === "form-submit" || data?.formId) {
+          const fields = data?.fields || data?.data || data || {};
+          // Match "First Name" and "Last Name" field labels
+          const firstName = fields["First Name"] || fields["first_name"] || fields["firstname"] || "";
+          const lastName  = fields["Last Name"]  || fields["last_name"]  || fields["lastname"]  || "";
+          if (firstName || lastName) {
+            localStorage.setItem("visme_first_name", firstName.trim());
+            localStorage.setItem("visme_last_name",  lastName.trim());
+          }
+        }
+      } catch { /* ignore parse errors */ }
+    }
+    window.addEventListener("message", handleVismeSubmit);
+    return () => window.removeEventListener("message", handleVismeSubmit);
   }, []);
 
   function redirectByRole(email) {
