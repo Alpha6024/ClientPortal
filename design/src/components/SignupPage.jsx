@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_EMAIL_2 = import.meta.env.VITE_ADMIN_EMAIL_2;
+const isAdmin = (email) => email === ADMIN_EMAIL || email === ADMIN_EMAIL_2;
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -44,7 +46,7 @@ export default function SignupPage() {
   }, []);
 
   function redirectByRole(email) {
-    navigate(email === ADMIN_EMAIL ? "/admin" : "/dashboard");
+    navigate(isAdmin(email) ? "/admin" : "/dashboard");
   }
 
   async function handleGoogleLogin() {

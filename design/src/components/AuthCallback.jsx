@@ -4,6 +4,8 @@ import { supabase } from "../supabaseClient";
 import { upsertUser } from "../api";
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_EMAIL_2 = import.meta.env.VITE_ADMIN_EMAIL_2;
+const isAdmin = (email) => email === ADMIN_EMAIL || email === ADMIN_EMAIL_2;
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ export default function AuthCallback() {
           name,
           surname,
           profileImage: meta?.avatar_url || meta?.picture || "",
-          role: user.email === ADMIN_EMAIL ? "admin" : "client",
+          role: isAdmin(user.email) ? "admin" : "client",
         });
       } catch (e) {
         console.error("Upsert failed", e);
@@ -46,7 +48,7 @@ export default function AuthCallback() {
       const { created_at, last_sign_in_at } = user;
       const isNewUser = Math.abs(new Date(created_at) - new Date(last_sign_in_at)) < 10000;
 
-      if (user.email === ADMIN_EMAIL) {
+      if (isAdmin(user.email)) {
         navigate("/admin");
       } else if (isNewUser) {
         window.location.href = "/onboarding.html";

@@ -6,7 +6,13 @@ import PDFDocument from "pdfkit";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
+
+function urlToLocalPath(url) {
+  return url
+    .replace(BACKEND_URL, path.join(__dirname, ".."))
+    .replace("http://localhost:5000", path.join(__dirname, ".."));
+}
 
 // ── Onboarding helpers ───────────────────────────────────────────────
 async function ensureOnboarding(clientId) {
@@ -157,7 +163,7 @@ export async function generateContractPDF(req, res, next) {
       const x = L + i * (colW + 20);
       if (f.signatureUrl) {
         try {
-          const imgPath = f.signatureUrl.replace("http://localhost:5000", path.join(__dirname, ".."));
+          const imgPath = urlToLocalPath(f.signatureUrl);
           doc.image(imgPath, x, sigY, { width: 120, height: 40, fit: [120, 40] });
         } catch { /* skip if image missing */ }
       }
@@ -172,7 +178,7 @@ export async function generateContractPDF(req, res, next) {
 
     if (contract.clientSignatureUrl) {
       try {
-        const imgPath = contract.clientSignatureUrl.replace("http://localhost:5000", path.join(__dirname, ".."));
+        const imgPath = urlToLocalPath(contract.clientSignatureUrl);
         doc.image(imgPath, clientSigX, clientSigY, { width: 120, height: 40, fit: [120, 40] });
       } catch { /* skip */ }
     }

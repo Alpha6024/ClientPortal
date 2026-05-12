@@ -20,6 +20,7 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "https://client-portal-taupe-nu.vercel.app",
     process.env.FRONTEND_URL,
   ].filter(Boolean),
   credentials: true,

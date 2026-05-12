@@ -22,6 +22,8 @@ import StatusBadge from "./onboarding/StatusBadge";
 const BASE = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5000";
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_EMAIL_2 = import.meta.env.VITE_ADMIN_EMAIL_2;
+const isAdmin = (email) => email === ADMIN_EMAIL || email === ADMIN_EMAIL_2;
 
 const STATUS = {
   red:    { label: "Not Started", color: "#f87171", bg: "bg-red-100",    text: "text-red-600",    dot: "bg-red-400" },
@@ -624,7 +626,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) { navigate("/login"); return; }
-      if (session.user.email !== ADMIN_EMAIL) { navigate("/dashboard"); return; }
+      if (!isAdmin(session.user.email)) { navigate("/dashboard"); return; }
       setUser(session.user);
     });
   }, [navigate]);
