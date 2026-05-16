@@ -162,10 +162,12 @@ export default function LoadingScreen() {
         >
           {/* Logo */}
           <div ref={logoRef} style={{ opacity: 0 }}>
-            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-lg"
-              style={{ boxShadow: "0 0 40px rgba(236,72,153,0.5), 0 0 80px rgba(236,72,153,0.2)" }}>
-              <span className="text-black font-bold text-2xl select-none">FS</span>
-            </div>
+            <img
+              src="/Freelance.jpeg"
+              alt="Logo"
+              className="w-16 h-16 rounded-2xl object-cover select-none"
+              style={{ boxShadow: "0 0 40px rgba(236,72,153,0.5), 0 0 80px rgba(236,72,153,0.2)" }}
+            />
           </div>
 
           {/* Title letters */}

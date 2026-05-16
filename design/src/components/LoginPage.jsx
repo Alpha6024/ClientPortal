@@ -30,7 +30,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-sm flex flex-col items-center gap-6">
-        <img src="/Freelance.png" alt="AP Studio" className="w-14 h-14 rounded-2xl object-cover" />
+        <img src="/Freelance.jpeg" alt="AP Studio" className="w-14 h-14 rounded-2xl object-cover" />
         <div className="text-center">
           <h1 className="text-white text-2xl font-bold">AP Studio</h1>
           <p className="text-zinc-400 text-sm mt-1">Sign in to continue</p>

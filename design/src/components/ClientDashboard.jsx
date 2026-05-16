@@ -95,7 +95,7 @@ export default function ClientDashboard() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2.5">
-          <img src="/Freelance.png" alt="AP Studio" className="w-8 h-8 rounded-xl object-cover" />
+          <img src="/Freelance.jpeg" alt="AP Studio" className="w-8 h-8 rounded-xl object-cover" />
           <span className="font-bold text-gray-800 text-sm">AP Studio</span>
         </div>
         <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-red-500 transition">Sign out →</button>

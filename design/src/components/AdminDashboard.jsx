@@ -744,7 +744,7 @@ export default function AdminDashboard() {
           >
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <img src="/Freelance.png" alt="AP Studio" className="w-8 h-8 rounded-xl object-cover flex-shrink-0" />
+                <img src="/Freelance.jpeg" alt="AP Studio" className="w-8 h-8 rounded-xl object-cover flex-shrink-0" />
                 <div>
                   <p className="font-bold text-gray-800 text-sm">AP Studio</p>
                   <p className="text-xs text-cyan-500 font-medium">Admin Panel</p>
