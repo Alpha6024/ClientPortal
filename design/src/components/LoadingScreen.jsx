@@ -29,7 +29,7 @@ export default function LoadingScreen() {
 
   const [count, setCount] = useState(0);
   const [done, setDone] = useState(false);
-  const [letters] = useState("Freelance Studio".split(""));
+  const [letters] = useState("AP Studio".split(""));
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);

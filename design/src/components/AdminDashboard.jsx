@@ -685,7 +685,7 @@ export default function AdminDashboard() {
                   <span className="text-white font-bold text-sm">FS</span>
                 </div>
                 <div>
-                  <p className="font-bold text-gray-800 text-sm">Freelance Studio</p>
+                  <p className="font-bold text-gray-800 text-sm">AP Studio</p>
                   <p className="text-xs text-cyan-500 font-medium">Admin Panel</p>
                 </div>
               </div>

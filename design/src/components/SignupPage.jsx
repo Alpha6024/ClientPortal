@@ -89,7 +89,7 @@ export default function SignupPage() {
           </svg>
           {googleLoading ? "Connecting..." : "Continue with Google"}
         </button>
-        <p className="text-xs text-gray-400 pb-1">Freelance Studio</p>
+        <p className="text-xs text-gray-400 pb-1">AP Studio</p>
       </div>
     </div>
   );

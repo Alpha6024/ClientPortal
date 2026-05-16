@@ -98,7 +98,7 @@ export default function ClientDashboard() {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center">
             <span className="text-white font-bold text-sm">FS</span>
           </div>
-          <span className="font-bold text-gray-800 text-sm">Freelance Studio</span>
+          <span className="font-bold text-gray-800 text-sm">AP Studio</span>
         </div>
         <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-red-500 transition">Sign out →</button>
       </nav>

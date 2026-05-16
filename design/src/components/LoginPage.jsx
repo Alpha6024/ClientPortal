@@ -34,7 +34,7 @@ export default function LoginPage() {
           <span className="text-black font-bold text-xl">FS</span>
         </div>
         <div className="text-center">
-          <h1 className="text-white text-2xl font-bold">Freelance Studio</h1>
+          <h1 className="text-white text-2xl font-bold">AP Studio</h1>
           <p className="text-zinc-400 text-sm mt-1">Sign in to continue</p>
         </div>
         <button
