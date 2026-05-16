@@ -1,6 +1,31 @@
 import Project from "../models/Project.js";
 import User from "../models/User.js";
 
+// Update project details (title, description, notes)
+export const updateProjectDetails = async (req, res) => {
+  try {
+    const { title, description, notes } = req.body;
+    const project = await Project.findByIdAndUpdate(
+      req.params.id,
+      { ...(title !== undefined && { title }), ...(description !== undefined && { description }), ...(notes !== undefined && { notes }) },
+      { new: true }
+    );
+    if (!project) return res.status(404).json({ message: "Project not found" });
+    res.json(project);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+// Delete user and all related data
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    await Project.deleteMany({ userId: user._id });
+    await user.deleteOne();
+    res.json({ message: "User deleted" });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
 // Get project by userId
 export const getProjectByUser = async (req, res) => {
   try {

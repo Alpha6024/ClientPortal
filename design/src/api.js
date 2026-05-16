@@ -16,6 +16,8 @@ export const updateUserStatus = (id, statusColor) => api.patch(`/users/${id}/sta
 export const getProjectByUser = (userId) => api.get(`/projects/user/${userId}`);
 export const updateProgress = (id, data) => api.patch(`/projects/${id}/progress`, data);
 export const undoProgress = (id) => api.patch(`/projects/${id}/undo`);
+export const updateProjectDetails = (id, data) => api.patch(`/projects/${id}/details`, data);
+export const deleteUser = (userId) => api.delete(`/projects/user/${userId}`);
 
 // Feedback
 export const addFeedback = (data) => api.post("/feedback", data);
@@ -38,6 +40,7 @@ export const createContract = (data) => api.post("/contracts", data);
 export const updateContract = (id, data) => api.patch(`/contracts/${id}`, data);
 export const sendContract = (id) => api.post(`/contracts/${id}/send`);
 export const signContract = (id, data) => api.post(`/contracts/${id}/sign`, data);
+export const deleteContract = (id) => api.delete(`/contracts/${id}`);
 export const getContractPdfUrl = (id) => `${api.defaults.baseURL}/contracts/${id}/pdf`;
 
 // Invoices

@@ -11,7 +11,7 @@ import {
   getStats, getUsers, getUserById,
   updateProgress, undoProgress, getFeedbackByProject,
   getContracts, getInvoices, getDocuments, getOnboarding,
-  sendContract, confirmPayment,
+  sendContract, confirmPayment, deleteContract, deleteUser, updateProjectDetails,
   getContractPdfUrl, getInvoicePdfUrl, getDocumentPdfUrl,
 } from "../api";
 import OnboardingDashboard from "./onboarding/OnboardingDashboard";
@@ -69,6 +69,7 @@ function ProgressBar({ pct }) {
 // ── Tabs inside UserDetailPanel ────────────────────────────────────
 const DETAIL_TABS = [
   { id: "progress",  label: "Progress",  icon: "📈" },
+  { id: "notes",     label: "Notes",     icon: "📌" },
   { id: "contracts", label: "Contracts", icon: "📝" },
   { id: "invoices",  label: "Invoices",  icon: "🧾" },
   { id: "timeline",  label: "Timeline",  icon: "🗓️" },
@@ -95,6 +96,10 @@ function UserDetailPanel({ userId, onClose }) {
   const [activeTab, setActiveTab] = useState("progress");
   const [viewer, setViewer]       = useState(null);
   const [payModal, setPayModal]   = useState(null);
+  const [noteTitle, setNoteTitle]   = useState("");
+  const [noteDesc, setNoteDesc]     = useState("");
+  const [noteText, setNoteText]     = useState("");
+  const [savingNote, setSavingNote] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -115,6 +120,9 @@ function UserDetailPanel({ userId, onClose }) {
       setInvoices(inv.data);
       setDocuments(d.data);
       setTimeline(ob.data);
+      setNoteTitle(uRes.data.project?.title || "");
+      setNoteDesc(uRes.data.project?.description || "");
+      setNoteText(uRes.data.project?.notes || "");
     } catch { toast.error("Failed to load user"); }
     setLoading(false);
   }, [userId]);
@@ -179,6 +187,13 @@ function UserDetailPanel({ userId, onClose }) {
           <div className={`px-4 py-2 rounded-full text-xs font-medium flex-shrink-0 ${STATUS[user.statusColor]?.bg} ${STATUS[user.statusColor]?.text}`}>
             {STATUS[user.statusColor]?.label}
           </div>
+          <button onClick={async () => {
+            if (!confirm(`Delete ${user.name} ${user.surname} and all their data? This cannot be undone.`)) return;
+            try { await deleteUser(user._id); toast.success("User deleted"); onClose(); }
+            catch { toast.error("Failed to delete user"); }
+          }} className="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-xs font-medium hover:bg-red-100 transition flex-shrink-0">
+            🗑 Delete
+          </button>
         </div>
 
         {/* Tab bar */}
@@ -291,6 +306,49 @@ function UserDetailPanel({ userId, onClose }) {
               </>
             )}
 
+            {/* ── NOTES TAB ── */}
+            {activeTab === "notes" && (
+              <div className="space-y-4">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <h3 className="font-semibold text-gray-700 mb-1">Project Details</h3>
+                  <p className="text-xs text-gray-400 mb-4">Visible to client in their dashboard</p>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Project Name</p>
+                      <input value={noteTitle} onChange={e => setNoteTitle(e.target.value)}
+                        placeholder="e.g. E-commerce Website Redesign"
+                        className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-300" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Project Description</p>
+                      <textarea value={noteDesc} onChange={e => setNoteDesc(e.target.value)} rows={3}
+                        placeholder="Brief description of the project scope..."
+                        className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-300 resize-none" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Notes for Client</p>
+                      <textarea value={noteText} onChange={e => setNoteText(e.target.value)} rows={4}
+                        placeholder="Any important notes, instructions, or updates for the client..."
+                        className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-300 resize-none" />
+                    </div>
+                    <button
+                      disabled={savingNote}
+                      onClick={async () => {
+                        setSavingNote(true);
+                        try {
+                          await updateProjectDetails(data.project._id, { title: noteTitle, description: noteDesc, notes: noteText });
+                          toast.success("Notes saved — client can now see them");
+                        } catch { toast.error("Failed to save"); }
+                        setSavingNote(false);
+                      }}
+                      className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-teal-500 text-white rounded-xl text-sm font-semibold hover:opacity-90 transition disabled:opacity-50">
+                      {savingNote ? "Saving..." : "💾 Save Notes"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* ── CONTRACTS TAB ── */}
             {activeTab === "contracts" && (
               <div className="space-y-3">
@@ -334,6 +392,11 @@ function UserDetailPanel({ userId, onClose }) {
                           <button onClick={async () => { try { await sendContract(c._id); toast.success("Sent!"); load(); } catch { toast.error("Failed"); } }}
                             className="flex-1 px-3 py-1.5 bg-teal-50 text-teal-600 rounded-lg text-xs font-medium hover:bg-teal-100 transition">Send</button>
                         )}
+                        <button onClick={async () => {
+                          if (!confirm("Delete this contract? This cannot be undone.")) return;
+                          try { await deleteContract(c._id); toast.success("Contract deleted"); load(); }
+                          catch { toast.error("Failed to delete"); }
+                        }} className="px-3 py-1.5 bg-red-50 text-red-500 rounded-lg text-xs font-medium hover:bg-red-100 transition">🗑</button>
                       </div>
                     </div>
                   );
@@ -681,9 +744,7 @@ export default function AdminDashboard() {
           >
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">FS</span>
-                </div>
+                <img src="/Freelance.png" alt="AP Studio" className="w-8 h-8 rounded-xl object-cover flex-shrink-0" />
                 <div>
                   <p className="font-bold text-gray-800 text-sm">AP Studio</p>
                   <p className="text-xs text-cyan-500 font-medium">Admin Panel</p>

@@ -95,9 +95,7 @@ export default function ClientDashboard() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">FS</span>
-          </div>
+          <img src="/Freelance.png" alt="AP Studio" className="w-8 h-8 rounded-xl object-cover" />
           <span className="font-bold text-gray-800 text-sm">AP Studio</span>
         </div>
         <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-red-500 transition">Sign out →</button>
@@ -168,6 +166,28 @@ export default function ClientDashboard() {
                   ))}
                 </div>
               </div>
+
+              {/* Project Notes from Admin */}
+              {(project?.title || project?.description || project?.notes) && (
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-lg">📌</span>
+                    <h2 className="font-bold text-gray-800">Project Info</h2>
+                  </div>
+                  {project?.title && project.title !== "Client Project" && (
+                    <p className="font-semibold text-gray-800 text-base mb-1">{project.title}</p>
+                  )}
+                  {project?.description && (
+                    <p className="text-sm text-gray-500 mb-3">{project.description}</p>
+                  )}
+                  {project?.notes && (
+                    <div className="bg-cyan-50 border border-cyan-100 rounded-2xl p-4">
+                      <p className="text-xs font-semibold text-cyan-600 mb-1">Notes from your team</p>
+                      <p className="text-sm text-gray-700 whitespace-pre-line">{project.notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Timeline */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">

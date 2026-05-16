@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import {
   getDocuments, getDocumentById, createDocument, updateDocument, deleteDocument, sendDocument, generateDocumentPDF,
-  getContracts, getContractById, createContract, updateContract, sendContract, signContract, generateContractPDF,
+  getContracts, getContractById, createContract, updateContract, sendContract, signContract, generateContractPDF, deleteContract,
   getInvoices, getInvoiceById, createInvoice, updateInvoice, sendInvoice, generateInvoicePDF, confirmPayment,
   getOnboarding, updateOnboardingStep,
 } from "../controllers/documentController.js";
@@ -39,6 +39,7 @@ router.post("/contracts",             createContract);
 router.patch("/contracts/:id",        updateContract);
 router.post("/contracts/:id/send",    sendContract);
 router.post("/contracts/:id/sign",    signContract);
+router.delete("/contracts/:id",       deleteContract);
 router.get("/contracts/:id/pdf",      generateContractPDF);
 
 // Invoices

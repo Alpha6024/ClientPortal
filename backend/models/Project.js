@@ -11,6 +11,8 @@ const projectSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, default: "Client Project" },
+    description: { type: String, default: "" },
+    notes: { type: String, default: "" },
     percentage: { type: Number, default: 0, min: 0, max: 100 },
     currentStage: { type: String, default: "Not started" },
     progressHistory: [progressUpdateSchema],

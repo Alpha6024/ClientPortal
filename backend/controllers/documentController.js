@@ -397,6 +397,11 @@ export async function getContractById(req, res, next) {
   } catch (e) { next(e); }
 }
 
+export async function deleteContract(req, res, next) {
+  try { await Contract.findByIdAndDelete(req.params.id); res.json({ message: "Deleted" }); }
+  catch (e) { next(e); }
+}
+
 export async function createContract(req, res, next) {
   try { res.status(201).json(await Contract.create(req.body)); }
   catch (e) { next(e); }
