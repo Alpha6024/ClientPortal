@@ -133,13 +133,14 @@ export async function generateContractPDF(req, res, next) {
     sectionHeading(doc, "Timeline");
     infoRow(doc, "Created",  new Date(contract.createdAt).toLocaleString());
     infoRow(doc, "Sent",     contract.sentAt   ? new Date(contract.sentAt).toLocaleString()   : "Not sent");
-    infoRow(doc, "Viewed",   contract.viewedAt ? new Date(contract.viewedAt).toLocaleString() : "Not viewed");
     infoRow(doc, "Signed",   contract.signedAt ? new Date(contract.signedAt).toLocaleString() : "Pending");
 
     // Agreement body
+    const BOTTOM_MARGIN = doc.page.height - 60; // leave room for footer
     sectionHeading(doc, "Agreement");
     const lines = htmlToLines(contract.body);
     lines.split("\n").forEach(line => {
+      if (doc.y > BOTTOM_MARGIN) doc.addPage();
       if (line.startsWith("§HEADING§")) {
         doc.moveDown(0.4);
         doc.font("Helvetica-Bold").fontSize(10).fillColor(DARK).text(line.replace("§HEADING§", ""), L, doc.y, { width: W });
@@ -153,7 +154,8 @@ export async function generateContractPDF(req, res, next) {
       }
     });
 
-    // Signatures block
+    // Signatures block — ensure enough space, else new page
+    if (doc.y > BOTTOM_MARGIN - 120) doc.addPage();
     doc.moveDown(1.5);
     sectionHeading(doc, "Signatures");
 
