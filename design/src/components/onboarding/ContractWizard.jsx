@@ -6,25 +6,71 @@ import { createContract, sendContract, getTemplates, getContractPdfUrl } from ".
 import RichEditor from "./RichEditor";
 import SignatureUpload from "./SignatureUpload";
 
+const today = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "2-digit" });
 const DEFAULT_CONTRACT = `<h2>Freelance Project Agreement</h2>
+<p>This Agreement is entered into between <strong>[Freelancer Name(s)]</strong> ("Developer") and <strong>[Client Name]</strong> ("Client") on ${today}.</p>
 <h3>1. Project Overview</h3>
-<p>This agreement is between <strong>[Freelancer Name]</strong> and <strong>[Client Name]</strong>, entered into on ${new Date().toLocaleDateString()}.</p>
+<p>The Developer agrees to design and develop a website/project for the Client based on the requirements discussed and approved by both parties.</p>
 <h3>2. Deliverables</h3>
-<p>The project includes:<br/>[Describe deliverables in detail]</p>
-<h3>3. Timeline</h3>
-<p>Project start date: [Start Date]<br/>Estimated completion: [End Date]</p>
+<p>The project includes:</p>
+<ul>
+<li>Custom website design and development</li>
+<li>Responsive/mobile-friendly layout</li>
+<li>Features and pages agreed upon before development</li>
+<li>Final deployment/setup</li>
+</ul>
+<p>Any additional features or requests outside the agreed scope may result in additional charges.</p>
+<h3>3. Project Timeline</h3>
+<ul>
+<li>Project Start Date: [Start Date]</li>
+<li>Estimated Completion Date: [End Date]</li>
+<li>Estimated development period: [X weeks]</li>
+</ul>
+<p>The project workflow includes the following meetings/checkpoints:</p>
+<ul>
+<li>1. Requirement Analysis Meeting</li>
+<li>2. Design Review &amp; Approval Meeting</li>
+<li>3. Final Review Before Delivery/Deployment</li>
+</ul>
+<p><strong>Note:</strong> Timeline may extend if the Client delays required content, approvals, feedback, or communication.</p>
 <h3>4. Payment Terms</h3>
-<p>Total project fee: <strong>$[Amount]</strong><br/>Deposit (50%) due before work begins.<br/>Remaining balance due upon project completion.</p>
-<h3>5. Revision Policy</h3>
-<p>This project includes <strong>[Number]</strong> rounds of revisions. Additional revisions billed separately.</p>
-<h3>6. Cancellation Terms</h3>
-<p>Either party may cancel with 7 days written notice. Deposit is non-refundable once work has commenced.</p>
-<h3>7. Ownership Rights</h3>
-<p>Client receives full ownership of all final deliverables upon receipt of complete payment.</p>
-<h3>8. Confidentiality</h3>
-<p>Both parties agree to keep all project details and communications strictly confidential.</p>
-<h3>9. Terms and Conditions</h3>
-<p>This agreement constitutes the entire understanding between both parties. Any modifications must be agreed upon in writing.</p>`;
+<ul>
+<li>Total Project Fee: Rs. [Amount]</li>
+</ul>
+<p>Payment Structure:</p>
+<ul>
+<li>50% advance payment must be completed before development begins.</li>
+<li>Remaining 50% payment must be completed before final delivery, deployment, or source file handover.</li>
+</ul>
+<p>Work will not begin until the advance payment is received.</p>
+<h3>5. Cancellation &amp; Refund Policy</h3>
+<ul>
+<li>If the project is cancelled before work has started, the Client is eligible for a full refund.</li>
+<li>If the project is cancelled after work has commenced, only 50% of the advance payment will be refunded.</li>
+</ul>
+<p>The remaining amount will be retained to cover design, planning, and development time already invested.</p>
+<h3>6. Revision Policy</h3>
+<p>The project includes 2 revision rounds:</p>
+<ul>
+<li>After the design phase</li>
+<li>Before final delivery</li>
+</ul>
+<p>Any additional revisions or change requests beyond these rounds may incur additional charges.</p>
+<h3>7. Post-Delivery Updates &amp; Maintenance</h3>
+<p>After final delivery:</p>
+<ul>
+<li>Small updates/minor changes: Rs. 250</li>
+<li>Larger updates/design modifications: Rs. 500</li>
+<li>Major feature additions or patch updates (e.g. payment gateway integration, dashboard systems, advanced functionality) will be quoted separately based on project complexity.</li>
+</ul>
+<h3>8. Ownership Rights</h3>
+<p>The Client receives ownership of the final deliverables only after full payment has been completed. Source files, code, assets, and deployment credentials will not be transferred until all pending payments are cleared.</p>
+<h3>9. Confidentiality</h3>
+<p>Both parties agree to keep all project-related information, files, and communications confidential unless otherwise agreed in writing.</p>
+<h3>10. Terms &amp; Conditions</h3>
+<p>This Agreement represents the complete understanding between both parties. Any modifications, additions, or changes to the project scope or agreement must be confirmed in writing by both parties.</p>
+<h3>11. Acceptance</h3>
+<p>By proceeding with the project and payment, both parties acknowledge and agree to the terms stated above.</p>`;
 
 const EMPTY_FREELANCER = { name: "", email: "", mobile: "", role: "", signatureUrl: "" };
 
@@ -35,6 +81,7 @@ export default function ContractWizard({ onClose, onCreated }) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
+  const [clientMobile, setClientMobile] = useState("");
   const [freelancers, setFreelancers] = useState([{ ...EMPTY_FREELANCER }]);
   const [body, setBody] = useState(DEFAULT_CONTRACT);
   const [saving, setSaving] = useState(false);
@@ -76,6 +123,7 @@ export default function ContractWizard({ onClose, onCreated }) {
         clientId: selectedClient._id,
         clientName: `${selectedClient.name} ${selectedClient.surname}`,
         clientEmail: selectedClient.email,
+        clientMobile,
         freelancers,
         body,
         status: "draft",
@@ -149,9 +197,15 @@ export default function ContractWizard({ onClose, onCreated }) {
               </div>
               {selectedClient && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-cyan-50 border border-cyan-200 rounded-xl p-3 text-sm">
+                  className="bg-cyan-50 border border-cyan-200 rounded-xl p-3 text-sm space-y-2">
                   <p className="font-medium text-cyan-700">Selected: {selectedClient.name} {selectedClient.surname}</p>
                   <p className="text-cyan-500 text-xs">{selectedClient.email} · ID: {selectedClient._id}</p>
+                  <input
+                    value={clientMobile}
+                    onChange={e => setClientMobile(e.target.value)}
+                    placeholder="Client Mobile Number (optional)"
+                    className="w-full border border-cyan-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                  />
                 </motion.div>
               )}
             </motion.div>

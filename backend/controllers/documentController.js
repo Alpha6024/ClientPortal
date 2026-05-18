@@ -45,6 +45,7 @@ function htmlToLines(html = "") {
     .replace(/<[^>]+>/g, "")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&nbsp;/g, " ").replace(/&#39;/g, "'").replace(/&quot;/g, '"')
+    .replace(/\u20B9/g, "Rs.").replace(/₹/g, "Rs.")  // fix rupee symbol — not in Helvetica
     .split("\n")
     .map(l => l.trim())
     .filter((l, i, arr) => l !== "" || (arr[i - 1] !== ""))  // collapse multiple blanks
@@ -122,7 +123,7 @@ export async function generateContractPDF(req, res, next) {
 
     // Parties
     sectionHeading(doc, "Parties");
-    infoRow(doc, "Client", `${contract.clientName}  ·  ${contract.clientEmail}`);
+    infoRow(doc, "Client", `${contract.clientName}  ·  ${contract.clientEmail}${contract.clientMobile ? "  ·  " + contract.clientMobile : ""}`);
     contract.freelancers.forEach((f, i) => {
       infoRow(doc, `Freelancer ${contract.freelancers.length > 1 ? i + 1 : ""}`.trim(),
         `${f.name}  ·  ${f.role}  ·  ${f.email}${f.mobile ? "  ·  " + f.mobile : ""}`);

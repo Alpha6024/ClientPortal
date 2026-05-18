@@ -13,6 +13,7 @@ const contractSchema = new mongoose.Schema({
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   clientName: String,
   clientEmail: String,
+  clientMobile: String,
   freelancers: { type: [freelancerSchema], validate: v => v.length >= 1 && v.length <= 2 },
   body: { type: String, required: true },
   status: { type: String, enum: ["draft", "sent", "viewed", "signed", "completed"], default: "draft" },
