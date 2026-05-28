@@ -3,6 +3,12 @@
 A full-stack freelancer–client management platform with contract creation, digital signatures, invoice generation, document management, onboarding timelines, and payment confirmation.
 
 ---
+# Some Glimpse
+
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/01c22433-4297-4f33-b226-54e7ba83625f" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/f3415fd6-c725-4b46-8012-5258b80d7ec4" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/7b232009-413d-427b-ad81-d8b9a25e6850" />
+
 
 ## Tech Stack
 
